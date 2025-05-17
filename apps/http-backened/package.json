@@ -1,0 +1,23 @@
+{
+  "name": "http-backened",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx esbuild ./src/index.ts --bundle --platform=node --outfile=dist/index.js",
+    "start": "NODE_ENV=production node dist/index.js",
+    "dev": "npm run build && NODE_ENV=dev node dist/index.js"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace: *",
+    "cross-env": "^7.0.3",
+    "esbuild": "^0.25.4"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/express": "^5.0.2",
+    "express": "^5.1.0"
+  }
+}
