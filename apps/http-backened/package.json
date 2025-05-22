@@ -13,5 +13,11 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@types/authenticator": "^1.1.4",
+    "@types/express": "^5.0.2",
+    "authenticator": "^1.1.5",
+    "express": "^5.1.0"
+  }
 }
