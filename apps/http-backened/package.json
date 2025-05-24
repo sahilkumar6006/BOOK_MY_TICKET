@@ -5,10 +5,11 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc -b",
-    "start": "node ./dist/index.js",
+    "start": "NODE_ENV=production node ./dist/index.js",
     "dev": "npm run build && npm run start"
   },
   "devDependencies": {
+    "@repo/db": "workspace: *",
     "@repo/typescript-config": "workspace: *"
   },
   "keywords": [],
@@ -17,7 +18,9 @@
   "dependencies": {
     "@types/authenticator": "^1.1.4",
     "@types/express": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.9",
     "authenticator": "^1.1.5",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2"
   }
 }
