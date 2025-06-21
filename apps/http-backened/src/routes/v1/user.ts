@@ -1,8 +1,8 @@
 import { generateToken, verifyToken } from 'authenticator';
-import {Router} from 'express';
-import {client} from '@repo/db/client'
+import { Router } from 'express';
 import jwt from 'jsonwebtoken';
-import { SECRET } from '../../config';
+import { client } from '@repo/db';
+import { TOPT_SECRET } from '../../config';
 
 const userRouter:Router = Router();
 
@@ -53,7 +53,7 @@ userRouter.post('/signup/verify',async(req,res) => {
 
     const token = jwt.sign({
         userId
-    }, SECRET)
+    }, TOPT_SECRET)
 
     res.json(
         token

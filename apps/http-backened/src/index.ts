@@ -1,13 +1,17 @@
-import express, { Request, Response, NextFunction } from "express";
-import {mainRouter} from './routes/v1/index'
+import express from "express";
+import dotenv from 'dotenv';
+import { mainRouter } from "./routes/v1";
+dotenv.config();
+
 
 const app = express();
-app.use(express.json());
-const PORT = process.env.PORT || 3000;
 
-app.use('/api/v1', mainRouter)
+app.get("/", (req, res) => {
+    res.send("Hello World!");
+});
 
+app.use("/api/v1/", mainRouter);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+app.listen(3000, () => {
+    console.log("Server is running on port 3000");
 });

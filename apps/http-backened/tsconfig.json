@@ -1,7 +1,19 @@
 {
-    "extends": "@repo/typescript-config/base.json",
-    "compilerOptions": {
-        "rootDir": "src",
-        "outDir": "./dist"
+  "extends": "../../packages/typescript-config/base.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "baseUrl": ".",
+    "paths": {
+      "@repo/db/*": ["../../packages/db/src/*"],
+      "@repo/db": ["../../packages/db/src/index.ts"]
     }
+  },
+  "references": [
+    { "path": "../../packages/db" }
+  ],
+  "include": ["src"]
 }

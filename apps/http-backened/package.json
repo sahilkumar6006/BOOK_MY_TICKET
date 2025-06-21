@@ -1,27 +1,32 @@
 {
   "name": "http-backened",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A Node.js backend app using Express and esbuild, ready for production.",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "tsc -b",
-    "start": "NODE_ENV=production node ./dist/index.js",
-    "dev": "npm run build && npm run start"
+    "dev": "cross-env NODE_ENV=development npm run build && node dist/index.js",
+    "build": "esbuild ./src/index.ts --bundle --platform=node --minify --outfile=dist/index.js",
+    "start": "cross-env NODE_ENV=production node dist/index.js",
+    "clean": "rm -rf dist"
   },
-  "devDependencies": {
-    "@repo/db": "workspace: *",
-    "@repo/typescript-config": "workspace: *"
-  },
-  "keywords": [],
-  "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/authenticator": "^1.1.4",
-    "@types/express": "^5.0.2",
-    "@types/jsonwebtoken": "^9.0.9",
-    "authenticator": "^1.1.5",
+    "@repo/db": "workspace:*",
+    "dotenv": "^16.4.7",
+    "esbuild": "^0.17.16",
     "express": "^5.1.0",
+    "@types/authenticator": "^1.1.4",
+    "@types/express": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.7",
+    "authenticator": "^1.1.5",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
     "jsonwebtoken": "^9.0.2",
-    "twilio": "^5.6.1"
+    "twilio": "^5.4.2"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "cross-env": "^7.0.3",
+    "typescript": "^5.8.2"
   }
 }
