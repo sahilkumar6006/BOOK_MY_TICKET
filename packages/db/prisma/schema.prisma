@@ -14,12 +14,15 @@ datasource db {
 }
 
 model User {
-  id        String    @id      @default(uuid())
-  number    String    @unique
-  name      String     
-  verified  Boolean   @default(false)
-  bookings  Booking[]
-  payments  Payment[]
+  id            String    @id      @default(uuid())
+  number        String    @unique
+  name          String    
+  email         String?   @unique
+  state         String?   
+  profileImage  String?   // URL to the profile image
+  verified      Boolean   @default(false)
+  bookings      Booking[]
+  payments      Payment[]
 }
 
 enum AdminType {
@@ -39,7 +42,7 @@ model Admin {
 model Event {
   id                String    @id      @default(uuid())
   name              String
-  desciprtion       String
+  description       String
   banner            String
   adminId           String
   admin             Admin     @relation(fields: [adminId], references: [id])
