@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
+    "@repo/common": "workspace:*",
     "cross-env": "^7.0.3",
     "typescript": "^5.8.2"
   }
