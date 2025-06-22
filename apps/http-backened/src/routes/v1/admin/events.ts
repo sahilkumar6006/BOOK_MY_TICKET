@@ -1,18 +1,88 @@
-import { Router, Request, Response } from "express";
-import { client } from "@repo/db/client"; 
+import { Router, Request, Response, RequestHandler } from "express";
+import { client } from "@repo/db/client";
 import { adminAuth } from "../../../middleware";
 import { CreateEventSchema, UpdateEventSchema, UpdateSeatSchema } from "@repo/common/types";
 import { getEvent } from "../../../controller";
 
+/**
+ * @swagger
+ * tags:
+ *   name: Events
+ *   description: Event management endpoints
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Event:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uuid
+ *         name:
+ *           type: string
+ *         description:
+ *           type: string
+ *         startDate:
+ *           type: string
+ *           format: date-time
+ *         endDate:
+ *           type: string
+ *           format: date-time
+ *         location:
+ *           type: string
+ *         totalSeats:
+ *           type: integer
+ *         availableSeats:
+ *           type: integer
+ *         price:
+ *           type: number
+ *           format: float
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ */
+
 const router: Router = Router();
 
-// Apply admin authentication middleware to all routes in this router
-router.use(adminAuth);
+// Apply admin authentication to all routes in this router
+router.use(adminAuth as RequestHandler);
 
+/**
+ * @swagger
+ * /api/v1/admin/events:
+ *   post:
+ *     summary: Create a new event
+ *     tags: [Events]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Event'
+ *     responses:
+ *       201:
+ *         description: Event created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Event'
+ *       400:
+ *         description: Invalid input data
+ *       401:
+ *         description: Unauthorized - Admin access required
+ */
 router.post("/", async (req: Request, res: Response) => {
-    const {data, success, error} = CreateEventSchema.safeParse(req.body);
+    const { data, success, error } = CreateEventSchema.safeParse(req.body);
     const adminId = req.userId;
-    
+
 
     if (!adminId) {
         res.status(401).json({
@@ -47,11 +117,11 @@ router.post("/", async (req: Request, res: Response) => {
                 }
             }
         })
-    
+
         res.json({
             id: event.id
         })
-    } catch(e) {
+    } catch (e) {
         console.log(e)
         res.status(500).json({
             message: "Could not create event"
@@ -60,7 +130,7 @@ router.post("/", async (req: Request, res: Response) => {
 });
 
 router.put("/metadata/:eventId", async (req: Request, res: Response) => {
-    const {data, success} = UpdateEventSchema.safeParse(req.body);
+    const { data, success } = UpdateEventSchema.safeParse(req.body);
     const adminId = req.userId;
     const eventId = req.params.eventId ?? "";
 
@@ -107,11 +177,11 @@ router.put("/metadata/:eventId", async (req: Request, res: Response) => {
                 ended: data.ended
             }
         })
-    
+
         res.json({
             id: event.id
         })
-    } catch(e) {
+    } catch (e) {
         res.status(500).json({
             message: "Could not update event"
         })
@@ -119,6 +189,26 @@ router.put("/metadata/:eventId", async (req: Request, res: Response) => {
 
 });
 
+/**
+ * @swagger
+ * /api/v1/admin/events:
+ *   get:
+ *     summary: Get all events
+ *     tags: [Events]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of events
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Event'
+ *       401:
+ *         description: Unauthorized - Admin access required
+ */
 router.get("/", async (req: Request, res: Response) => {
     const events = await client.event.findMany({
         where: {
@@ -234,7 +324,7 @@ router.put("/seats/:eventId", async (req: Request, res: Response) => {
                 }
             }))
         ])
-    } catch(e) {
+    } catch (e) {
         res.status(500).json({
             message: "Could not update seats"
         });

@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from 'dotenv';
 import { mainRouter } from "./routes/v1";
 import cors from 'cors';
+import { setupSwagger } from './config/swagger';
 
 dotenv.config();
 
@@ -25,6 +26,9 @@ app.use((req, res, next) => {
 app.get("/", (req, res) => {
     res.send("Hello World!");
 });
+
+// Setup Swagger documentation
+setupSwagger(app);
 
 // API routes
 app.use("/api/v1", mainRouter);

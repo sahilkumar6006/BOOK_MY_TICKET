@@ -1,7 +1,7 @@
 import { Router, Request, Response, RequestHandler } from 'express';
 import { generateToken, verifyToken } from 'authenticator';
 import { client } from '@repo/db/client';
-import { TOPT_SECRET } from '../../config';
+import { TOPT_SECRET } from '../../../config';
 
 const isDev = process.env.NODE_ENV !== "production";
 
@@ -101,7 +101,7 @@ userRouter.post('/signup/verify', (async (req: VerifyRequest, res: Response) => 
                 verified: true
             }
         })
-    
+
 
         res.json({ message: "User verified successfully" });
 
@@ -115,20 +115,20 @@ userRouter.post('/signup/verify', (async (req: VerifyRequest, res: Response) => 
 // User Sign In
 userRouter.post('/signin', (async (req: SigninRequest, res: Response) => {
     console.log('Signin request body:', req.body); // Log the request body
-    
+
     if (!req.body) {
         console.error('No request body received');
-        return res.status(400).json({ 
+        return res.status(400).json({
             success: false,
-            message: "Request body is required" 
+            message: "Request body is required"
         });
     }
-    
+
     const { number } = req.body;
     if (!number) {
-        return res.status(400).json({ 
+        return res.status(400).json({
             success: false,
-            message: "Phone number is required in the request body" 
+            message: "Phone number is required in the request body"
         });
     }
 
@@ -145,7 +145,7 @@ userRouter.post('/signin', (async (req: SigninRequest, res: Response) => {
 
         // In production, generate and send OTP
         const otp = isDev ? "0000" : generateToken(number + "USER_SIGNIN");
-        
+
         // In a real app, you would send the OTP via SMS
         console.log(`OTP for ${number}: ${otp}`);
 
@@ -164,17 +164,17 @@ userRouter.post('/signin', (async (req: SigninRequest, res: Response) => {
 // Verify User Sign In
 userRouter.post('/signin/verify', (async (req: VerifySigninRequest, res: Response) => {
     console.log('Signin verify request body:', req.body); // Log the request body
-    
+
     if (!req.body) {
         console.error('No request body received for verification');
-        return res.status(400).json({ 
+        return res.status(400).json({
             success: false,
-            message: "Request body is required" 
+            message: "Request body is required"
         });
     }
-    
+
     const { number, otp } = req.body;
-    
+
     if (!number || !otp) {
         res.status(400).json({ message: "Phone number and OTP are required" });
         return;
@@ -231,10 +231,10 @@ userRouter.post('/signin/verify', (async (req: VerifySigninRequest, res: Respons
 userRouter.put('/profile', (async (req: UpdateProfileRequest, res: Response) => {
     try {
         const { name, email, state } = req.body;
-        
+
         // In a real app, get user ID from auth token
         const userId = req.user?.id;
-        
+
         if (!userId) {
             return res.status(401).json({
                 success: false,
@@ -274,14 +274,14 @@ userRouter.put('/profile', (async (req: UpdateProfileRequest, res: Response) => 
         });
     } catch (error: any) {
         console.error("Error updating profile:", error);
-        
+
         if (error.code === 'P2002' && error.meta?.target?.includes('email')) {
             return res.status(400).json({
                 success: false,
                 message: "Email already in use"
             });
         }
-        
+
         res.status(500).json({
             success: false,
             message: "Error updating profile"
