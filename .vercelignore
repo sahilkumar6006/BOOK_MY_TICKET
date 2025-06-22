@@ -1,0 +1,17 @@
+node_modules
+.git
+.gitignore
+.turbo
+.vscode
+.env
+.env.*
+!.env.example
+pnpm-lock.yaml
+pnpm-workspace.yaml
+turbo.json
+README.md
+packages/
+apps/worker/
+apps/http-backened/src/
+apps/http-backened/tsconfig.json
+apps/http-backened/.eslintrc.json

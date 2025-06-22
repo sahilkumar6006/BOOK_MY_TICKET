@@ -5,7 +5,6 @@ import { client } from '@repo/db/client';
 import { TOPT_SECRET, ADMIN_JWT_PASSWORD } from '../../../config';
 import eventsRouter from './events';
 
-// Extend the Express Request type to include userId
 declare global {
     namespace Express {
         interface Request {
@@ -16,7 +15,6 @@ declare global {
 
 const adminRouter: Router = Router();
 
-// Mount the events router
 adminRouter.use('/events', eventsRouter);
 
 interface SignupRequest extends Request {
@@ -60,9 +58,9 @@ adminRouter.post('/signup', (async (req: SignupRequest, res: Response) => {
     try {
         await client.admin.upsert({
             where: { number },
-            create: { 
+            create: {
                 number,
-                name: '', 
+                name: '',
                 verified: false,
                 type: 'Creator'
             },
@@ -100,9 +98,9 @@ adminRouter.post('/signup/verify', (async (req: VerifyRequest, res: Response) =>
 
         await client.admin.update({
             where: { number },
-            data: { 
-                name, 
-                verified: true 
+            data: {
+                name,
+                verified: true
             }
         });
 
@@ -113,28 +111,25 @@ adminRouter.post('/signup/verify', (async (req: VerifyRequest, res: Response) =>
     }
 }) as any);
 
-// Admin Sign In
 adminRouter.post('/signin', (async (req: SigninRequest, res: Response) => {
-    console.log('Admin signin request body:', req.body); // Log the request body
-    
+
     if (!req.body) {
         console.error('No request body received');
-        return res.status(400).json({ 
+        return res.status(400).json({
             success: false,
-            message: "Request body is required" 
+            message: "Request body is required"
         });
     }
-    
+
     const { number } = req.body;
     if (!number) {
-        return res.status(400).json({ 
+        return res.status(400).json({
             success: false,
-            message: "Phone number is required in the request body" 
+            message: "Phone number is required in the request body"
         });
     }
 
     try {
-        // Check if admin exists
         const admin = await client.admin.findUnique({
             where: { number }
         });
@@ -144,16 +139,13 @@ adminRouter.post('/signin', (async (req: SigninRequest, res: Response) => {
             return;
         }
 
-        // In production, generate and send OTP
         const otp = process.env.NODE_ENV !== "production" ? "0000" : generateToken(number + "ADMIN_SIGNIN");
-        
-        // In a real app, you would send the OTP via SMS or email
+
         console.log(`OTP for ${number}: ${otp}`);
 
         res.json({
             success: true,
             message: "OTP sent successfully",
-            // Only return OTP in development for testing
             otp: process.env.NODE_ENV !== "production" ? otp : undefined
         });
     } catch (error) {
@@ -162,20 +154,19 @@ adminRouter.post('/signin', (async (req: SigninRequest, res: Response) => {
     }
 }) as any);
 
-// Verify Admin Sign In
 adminRouter.post('/signin/verify', (async (req: VerifySigninRequest, res: Response) => {
     console.log('Admin signin verify request body:', req.body); // Log the request body
-    
+
     if (!req.body) {
         console.error('No request body received for verification');
-        return res.status(400).json({ 
+        return res.status(400).json({
             success: false,
-            message: "Request body is required" 
+            message: "Request body is required"
         });
     }
-    
+
     const { number, otp } = req.body;
-    
+
     if (!number || !otp) {
         res.status(400).json({ message: "Phone number and OTP are required" });
         return;
@@ -214,12 +205,12 @@ adminRouter.post('/signin/verify', (async (req: VerifySigninRequest, res: Respon
 
         // Generate JWT token
         const authToken = jwt.sign(
-            { 
-                id: admin.id, 
+            {
+                id: admin.id,
                 number: admin.number,
                 type: admin.type,
                 role: 'admin'
-            }, 
+            },
             ADMIN_JWT_PASSWORD,
             { expiresIn: '7d' }
         );

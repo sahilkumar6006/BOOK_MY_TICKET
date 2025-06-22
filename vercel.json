@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "buildCommand": "pnpm install && pnpm build",
+  "installCommand": "pnpm install",
+  "builds": [
+    {
+      "src": "apps/http-backened/src/index.ts",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/apps/http-backened/src/index.ts"
+    }
+  ],
+  "outputDirectory": "apps/http-backened/dist"
+}
